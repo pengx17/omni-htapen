@@ -1,0 +1,8 @@
+
+# Ignore auto-gen files:
+.git
+dockerfiles
+build.sh
+.dockerignore
+.vscode
+README.md
