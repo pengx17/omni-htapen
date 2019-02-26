@@ -1,7 +1,6 @@
 FROM ubuntu
 
-RUN mkdir omnihtapen
-COPY ./server ./omnihtapen 
+COPY ./dist ./omnihtapen 
 WORKDIR /omnihtapen
 
 EXPOSE 8080

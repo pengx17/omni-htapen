@@ -11,4 +11,4 @@ RUN go mod download
 COPY . .
 
 # Build
-RUN GOOS=linux CGO_ENABLED=0 go build -o ./server .
+RUN GOOS=linux CGO_ENABLED=0 go build -o ./dist/server .

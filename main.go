@@ -61,7 +61,7 @@ func (server *omniServer) initServer() {
 	// Application started. Press CTRL+C to shut down.
 	if *secure {
 		fmt.Printf("Serving at :%d with SSL\n", *port)
-		app.Run(iris.AutoTLS(fmt.Sprintf(":%d", *port), "htapen.com", "mail@htapen.com"))
+		app.Run(iris.AutoTLS(fmt.Sprintf("0.0.0.0:%d", *port), "htapen.com", "pengxiao@outlook.com"))
 	} else {
 		// Serve using a host:port form.
 		var laddr = iris.Addr(fmt.Sprintf("0.0.0.0:%d", *port))
