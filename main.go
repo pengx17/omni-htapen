@@ -3,14 +3,18 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/url"
 
 	"github.com/kataras/iris"
+	"github.com/kataras/iris/core/host"
 	"github.com/kataras/iris/middleware/logger"
 )
 
 var (
-	port   = flag.Int("port", 8080, "port number")
-	secure = flag.Bool("secure", false, "enable SSL")
+	port     = flag.Int("port", 80, "port number")
+	secure   = flag.Bool("secure", false, "enable SSL")
+	certFile = flag.String("cert", "/etc/letsencrypt/live/htapen.com/fullchain.pem", "cert file")
+	keyFile  = flag.String("key", "/etc/letsencrypt/live/htapen.com/privkey.pem", "private key file")
 )
 
 func main() {
@@ -59,12 +63,17 @@ func (server *omniServer) initServer() {
 
 	// Now listening on: http://localhost:{port}
 	// Application started. Press CTRL+C to shut down.
+	addr := fmt.Sprintf("0.0.0.0:%d", *port)
 	if *secure {
+		// Redirect 80 request to 443
+		target, _ := url.Parse("https://" + addr)
+		go host.NewProxy("0.0.0.0:80", target).ListenAndServe()
+
 		fmt.Printf("Serving at :%d with SSL\n", *port)
-		app.Run(iris.AutoTLS(fmt.Sprintf("0.0.0.0:%d", *port), "htapen.com", "pengxiao@outlook.com"))
+		app.Run(iris.TLS(addr, *certFile, *keyFile))
 	} else {
 		// Serve using a host:port form.
-		var laddr = iris.Addr(fmt.Sprintf("0.0.0.0:%d", *port))
+		var laddr = iris.Addr(addr)
 		app.Run(laddr, iris.WithCharset("UTF-8"))
 	}
 }
